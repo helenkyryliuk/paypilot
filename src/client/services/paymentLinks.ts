@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api";
 
 export async function getPaymentPage(slug: string): Promise<PaymentPageData> {
   const response = await fetch(
-    `${API_URL}/public/payment-links/${encodeURIComponent(slug)}`,
+    `${API_URL}/payment-links/${encodeURIComponent(slug)}`,
   );
 
   if (!response.ok) {

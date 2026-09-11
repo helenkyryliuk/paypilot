@@ -9,7 +9,7 @@ import { PaymentForm } from "./PaymentForm";
 import { ProductSummary } from "./ProductSummary";
 import { payPilotAppearance, stripePromise } from "@/lib/stripe";
 import { getPaymentPage } from "@/services/paymentLinks";
-import type { PaymentPageData } from "@/types/payment-link";
+import type { PublicPaymentLink } from "@/types/paymentink";
 
 export function PublicPaymentPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -24,6 +24,8 @@ export function PublicPaymentPage() {
       setIsLoading(false);
       return;
     }
+    console.log(slug);
+    console.log(pageData);
 
     const controller = new AbortController();
 
