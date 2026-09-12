@@ -9,7 +9,7 @@ import {
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { PublicPaymentLink } from "@/types/payment-link";
+import type { PublicPaymentLink } from "../shared/types";
 
 type ProductSummaryProps = {
   paymentLink: PublicPaymentLink;

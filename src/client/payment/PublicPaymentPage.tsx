@@ -9,12 +9,12 @@ import { PaymentForm } from "./PaymentForm";
 import { ProductSummary } from "./ProductSummary";
 import { payPilotAppearance, stripePromise } from "@/lib/stripe";
 import { getPaymentPage } from "@/services/paymentLinks";
-import type { PublicPaymentLink } from "@/types/paymentink";
+import type { PublicPaymentLink } from "../shared/types";
 
 export function PublicPaymentPage() {
   const { slug } = useParams<{ slug: string }>();
 
-  const [pageData, setPageData] = useState<PaymentPageData>();
+  const [pageData, setPageData] = useState<PublicPaymentLink>();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
 

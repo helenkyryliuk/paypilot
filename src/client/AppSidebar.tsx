@@ -36,7 +36,7 @@ export function AppSidebar({ pathname }: AppSidebarProps) {
       <SidebarHeader className="p-4 flex-row pb-0">
         <div className="payflow-icon-wrapper">
           <svg className="payflow-icon" role="presentation" aria-hidden="true">
-            <use href="/src/client/public/file.svg"></use>
+            <use href="/src/client/assets/logo.svg"></use>
           </svg>
         </div>
 
