@@ -6,15 +6,15 @@ import {
   getPaymentLinks,
   updatePaymentLinkStatus,
 } from "../controllers/paymentLinks.controller.ts";
-import { createPaymentIntent } from "../controllers/payments.controller.ts";
+import { getPublicPaymentPage } from "../controllers/payments.controller.ts";
 
 const router = Router();
 
 router.post("/", createPaymentLink);
 router.get("/", getPaymentLinks);
 
-router.post("/:slug/payment-intent", createPaymentIntent);
-router.get("/:slug", getPaymentLinkBySlug);
+// router.post("/:slug/payment-intent", createPaymentIntent);
+router.get("/:slug", getPublicPaymentPage);
 
 router.patch("/:id/status", updatePaymentLinkStatus);
 router.delete("/:id", deletePaymentLink);
