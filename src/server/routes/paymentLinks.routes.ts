@@ -13,7 +13,7 @@ const router = Router();
 router.post("/", createPaymentLink);
 router.get("/", getPaymentLinks);
 
-// router.post("/:slug/payment-intent", createPaymentIntent);
+router.post("/:slug/success", createPaymentIntent);
 router.get("/:slug", getPublicPaymentPage);
 
 router.patch("/:id/status", updatePaymentLinkStatus);

@@ -47,8 +47,7 @@ export function OnlinePaymentForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(stripe);
-    console.log(elements);
+
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
