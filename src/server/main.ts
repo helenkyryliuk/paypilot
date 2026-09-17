@@ -40,7 +40,7 @@ app.post(
       try {
         event = stripe.webhooks.constructEvent(
           request.body,
-          signature,
+          signature!,
           endpointSecret,
         );
       } catch (err) {

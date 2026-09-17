@@ -38,13 +38,27 @@ import { FieldSet } from "@/components/ui/field";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar.tsx";
 import { useState } from "react";
-import { Rocket, Check, Copy, Link, ExternalLink } from "lucide-react";
+import {
+  Rocket,
+  Check,
+  Copy,
+  Link,
+  ExternalLink,
+  Download,
+  FileDown,
+  ShieldCheck,
+  Flag,
+  BadgeDollarSign,
+  UserRound,
+} from "lucide-react";
 import { CopyLinkInput } from "./CopyLinkInput.tsx";
 import { createPaymentLink } from "../api/paymentLinks.api.ts";
 import ReactCountryFlag from "react-country-flag";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { buttonVariants } from "@/components/ui/button";
 import { CreatePaymentBanner } from "./CreatePaymentBanner.tsx";
+import { Separator } from "@/components/ui/separator";
+import { SummaryRow } from "./payment/SummaryRow.tsx";
 
 const formSchema = z.object({
   productName: z
@@ -73,6 +87,7 @@ export function CreatePaymentPage() {
     handleSubmit,
     control,
     formState: { isSubmitting, isSubmitted, isSubmitSuccessful },
+    watch,
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,6 +114,7 @@ export function CreatePaymentPage() {
   const pnCreateAnotherPaymentLink = () => {
     setSlug("");
   };
+  const watchAllFields = watch();
   return (
     <SidebarProvider>
       <AppSidebar pathname={location.pathname} />
@@ -362,31 +378,71 @@ export function CreatePaymentPage() {
                       <span className="dot yellow"></span>
                       <span className="dot green"></span>
                     </div>
-
-                    {/* <div className="browser-address">
-                    🔒 paypilot.app/pay/8fd92a34
-                  </div> */}
                   </div>
+                  <div className="flex h-full flex-col p-6 sm:p-8">
+                    <div className="flex flex-1 flex-col">
+                      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/8">
+                        <div className="relative flex size-10 items-center justify-center rounded-2xl bg-background text-primary shadow-sm">
+                          <FileDown className="size-5" />
 
-                  <div className="browser-content">
-                    <div className="checkout">
-                      <img src="logo.svg" />
-
-                      <h2>Website Design</h2>
-
-                      <div className="price">$250.00</div>
-
-                      <p>Deposit for website redesign project.</p>
-
-                      <hr />
-
-                      <div className="customer">
-                        <i className="fa fa-user"></i>
-
-                        <div>
-                          <strong>John Smith</strong>
-                          <span>john@email.com</span>
+                          <span className="absolute -bottom-2 -right-2 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                            <Download className="size-2" />
+                          </span>
                         </div>
+                      </div>
+
+                      <div className="mt-7 text-center">
+                        <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                          Product name
+                        </h2>
+
+                        <div className="mx-auto mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+                          {watchAllFields.description ??
+                            "Payment link description"}
+                        </div>
+                      </div>
+
+                      <Separator className="my-8" />
+
+                      <dl className="space-y-5">
+                        <SummaryRow
+                          icon={<BadgeDollarSign className="size-4" />}
+                          label="Amount"
+                          value={`NZD $${watchAllFields.amount.toFixed(2)}`}
+                        />
+
+                        <SummaryRow
+                          icon={<Flag className="size-4" />}
+                          label="Product"
+                          value={watchAllFields.productName}
+                        />
+
+                        <SummaryRow
+                          icon={<Download className="size-4" />}
+                          label="Type"
+                          value={`Digital Download`}
+                        />
+
+                        <SummaryRow
+                          icon={<UserRound className="size-4" />}
+                          label="Seller"
+                          value={`Helen`}
+                        />
+                      </dl>
+                    </div>
+
+                    <Separator className="my-8" />
+
+                    <div className="flex gap-3">
+                      <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
+
+                      <div>
+                        <p className="text-sm font-semibold">Secure checkout</p>
+
+                        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                          Your payment information is encrypted and securely
+                          processed by Stripe.
+                        </p>
                       </div>
                     </div>
                   </div>

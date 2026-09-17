@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   createPaymentLink,
   deletePaymentLink,
-  getPaymentLinkBySlug,
   getPaymentLinks,
   updatePaymentLinkStatus,
 } from "../controllers/paymentLinks.controller.ts";
@@ -13,7 +12,7 @@ const router = Router();
 router.post("/", createPaymentLink);
 router.get("/", getPaymentLinks);
 
-router.post("/:slug/success", createPaymentIntent);
+// router.post("/:slug/success", createPaymentIntent);
 router.get("/:slug", getPublicPaymentPage);
 
 router.patch("/:id/status", updatePaymentLinkStatus);
