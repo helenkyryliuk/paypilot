@@ -74,3 +74,16 @@ export async function getPublicPaymentPage(
     });
   }
 }
+
+export async function handlePaymentIntentSucceeded(
+  paymentIntent: Stripe.PaymentIntent,
+) {
+  await prisma.payment.update({
+    where: {
+      stripePaymentIntentId: paymentIntent.id,
+    },
+    data: {
+      status: "SUCCEEDED",
+    },
+  });
+}

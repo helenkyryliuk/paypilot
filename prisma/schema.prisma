@@ -27,7 +27,7 @@ model PaymentLink {
   productName String
   description String?
   amount      Int
-  currency    String  @default("usd")
+  currency    String  @default("nzd")
   slug        String  @unique
   downloadUrl String?
   isActive    Boolean @default(true)

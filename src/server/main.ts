@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import Stripe from "stripe";
 import { prisma } from "./lib/prisma.ts";
 import paymentLinkRoutes from "./routes/paymentLinks.routes.ts";
+import { handlePaymentIntentSucceeded } from "./controllers/payments.controller.ts";
 
 const app = express();
 
@@ -27,16 +28,62 @@ const stripe = new Stripe(secretKey);
 // Don't include webhook secrets in code.
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+// app.post(
+//   "/api/payments/webhook",
+//   express.raw({ type: "application/json" }),
+//   (request, response) => {
+//     let event = request.body;
+//     // Only verify the event if you have an endpoint secret defined.
+//     // Otherwise use the basic event deserialized with JSON.parse
+//     if (endpointSecret) {
+//       // Get the signature sent by Stripe
+//       const signature = request.headers["stripe-signature"];
+//       try {
+//         event = stripe.webhooks.constructEvent(
+//           request.body,
+//           signature!,
+//           endpointSecret,
+//         );
+//       } catch (err) {
+//         console.log(`⚠️  Webhook signature verification failed.`, err.message);
+//         return response.sendStatus(400);
+//       }
+//     }
+
+//     // Handle the event
+//     switch (event.type) {
+//       case "payment_intent.succeeded":
+//         const paymentIntent = event.data.object;
+//         console.log(
+//           `PaymentIntent for ${paymentIntent.amount} was successful!`,
+//         );
+//         // Then define and call a method to handle the successful payment intent.
+//         // handlePaymentIntentSucceeded(paymentIntent);
+//         break;
+//       case "payment_method.attached":
+//         const paymentMethod = event.data.object;
+//         // Then define and call a method to handle the successful attachment of a PaymentMethod.
+//         // handlePaymentMethodAttached(paymentMethod);
+//         break;
+//       default:
+//         // Unexpected event type
+//         console.log(`Unhandled event type ${event.type}.`);
+//     }
+
+//     // Return a 200 response to acknowledge receipt of the event
+//     response.send();
+//   },
+// );
+
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json" }),
-  (request, response) => {
+  async (request, response) => {
     let event = request.body;
-    // Only verify the event if you have an endpoint secret defined.
-    // Otherwise use the basic event deserialized with JSON.parse
+
     if (endpointSecret) {
-      // Get the signature sent by Stripe
       const signature = request.headers["stripe-signature"];
+
       try {
         event = stripe.webhooks.constructEvent(
           request.body,
@@ -44,33 +91,36 @@ app.post(
           endpointSecret,
         );
       } catch (err) {
-        console.log(`⚠️  Webhook signature verification failed.`, err.message);
+        console.log("⚠️ Webhook signature verification failed.", err);
+
         return response.sendStatus(400);
       }
     }
 
-    // Handle the event
-    switch (event.type) {
-      case "payment_intent.succeeded":
-        const paymentIntent = event.data.object;
-        console.log(
-          `PaymentIntent for ${paymentIntent.amount} was successful!`,
-        );
-        // Then define and call a method to handle the successful payment intent.
-        // handlePaymentIntentSucceeded(paymentIntent);
-        break;
-      case "payment_method.attached":
-        const paymentMethod = event.data.object;
-        // Then define and call a method to handle the successful attachment of a PaymentMethod.
-        // handlePaymentMethodAttached(paymentMethod);
-        break;
-      default:
-        // Unexpected event type
-        console.log(`Unhandled event type ${event.type}.`);
-    }
+    try {
+      switch (event.type) {
+        case "payment_intent.succeeded": {
+          const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-    // Return a 200 response to acknowledge receipt of the event
-    response.send();
+          console.log(
+            `PaymentIntent for ${paymentIntent.amount} was successful!`,
+          );
+
+          await handlePaymentIntentSucceeded(paymentIntent);
+
+          break;
+        }
+
+        default:
+          console.log(`Unhandled event type ${event.type}`);
+      }
+
+      response.sendStatus(200);
+    } catch (error) {
+      console.error("Webhook processing failed:", error);
+
+      response.sendStatus(500);
+    }
   },
 );
 

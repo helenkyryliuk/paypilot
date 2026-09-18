@@ -9,7 +9,7 @@ import { PaymentForm } from "./PaymentForm";
 import { ProductSummary } from "./ProductSummary";
 import { payPilotAppearance, stripePromise } from "@/lib/stripe";
 import { getPaymentPage } from "@/services/paymentLinks";
-import type { PaymentPageData } from "../shared/types";
+import type { PaymentPageData } from "../../shared/types";
 
 export function PublicPaymentPage() {
   const { slug } = useParams<{ slug: string }>();
