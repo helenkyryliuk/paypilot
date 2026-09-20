@@ -28,53 +28,6 @@ const stripe = new Stripe(secretKey);
 // Don't include webhook secrets in code.
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-// app.post(
-//   "/api/payments/webhook",
-//   express.raw({ type: "application/json" }),
-//   (request, response) => {
-//     let event = request.body;
-//     // Only verify the event if you have an endpoint secret defined.
-//     // Otherwise use the basic event deserialized with JSON.parse
-//     if (endpointSecret) {
-//       // Get the signature sent by Stripe
-//       const signature = request.headers["stripe-signature"];
-//       try {
-//         event = stripe.webhooks.constructEvent(
-//           request.body,
-//           signature!,
-//           endpointSecret,
-//         );
-//       } catch (err) {
-//         console.log(`⚠️  Webhook signature verification failed.`, err.message);
-//         return response.sendStatus(400);
-//       }
-//     }
-
-//     // Handle the event
-//     switch (event.type) {
-//       case "payment_intent.succeeded":
-//         const paymentIntent = event.data.object;
-//         console.log(
-//           `PaymentIntent for ${paymentIntent.amount} was successful!`,
-//         );
-//         // Then define and call a method to handle the successful payment intent.
-//         // handlePaymentIntentSucceeded(paymentIntent);
-//         break;
-//       case "payment_method.attached":
-//         const paymentMethod = event.data.object;
-//         // Then define and call a method to handle the successful attachment of a PaymentMethod.
-//         // handlePaymentMethodAttached(paymentMethod);
-//         break;
-//       default:
-//         // Unexpected event type
-//         console.log(`Unhandled event type ${event.type}.`);
-//     }
-
-//     // Return a 200 response to acknowledge receipt of the event
-//     response.send();
-//   },
-// );
-
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json" }),
@@ -127,36 +80,6 @@ app.post(
 app.use(express.json()); // Essential to read incoming JSON if needed
 
 app.use("/api/payment-links", paymentLinkRoutes);
-
-const calculateOrderAmount = (items) => {
-  // Calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
-  let total = 0;
-  items.forEach((item) => {
-    total += item.amount;
-  });
-  return total;
-};
-
-app.post("/api/create-payment-intent", async (req, res) => {
-  const { items } = req.body;
-
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: calculateOrderAmount(items),
-      currency: "nzd",
-      metadata: {
-        paymentLinkId: "abc123",
-      },
-    });
-    res.send({
-      clientSecret: paymentIntent.client_secret,
-    });
-  } catch (error) {
-    console.error("Stripe Error:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
 
 app.get("/api/health/db", async (_request, response) => {
   try {
