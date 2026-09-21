@@ -1,8 +1,8 @@
 # PayPilot 💳
 
-PayPilot is a full-stack payment links application that allows sellers to create shareable payment links and accept secure online payments through Stripe.
+PayPilot is a full-stack payment links application designed for content creators and digital product sellers to create shareable payment links and accept secure online payments through Stripe.
 
-The project was created as a portfolio SaaS application to demonstrate modern frontend architecture, TypeScript, API integration, payment workflows, form handling, testing, and full-stack collaboration between a React frontend and Node.js backend.
+This MVP demonstrates modern frontend architecture, TypeScript, API integration, payment workflows, form handling, testing, and full-stack collaboration between a React frontend and Node.js backend.
 
 ---
 
