@@ -476,6 +476,19 @@ Potential future additions include:
 
 ## 👩‍💻 About the Project
 
+PayPilot was built as a portfolio project to stay actively engaged with modern frontend and SaaS development practices while exploring payment architecture using Stripe.
+
+The project reflects my professional interests in:
+
+- React and TypeScript
+- SaaS products
+- Payment experiences
+- Complex frontend state
+- Scalable application architecture
+- Accessibility
+- Testing
+- Customer-focused product development
+
 ---
 
 ## 📄 License
