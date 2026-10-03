@@ -1,47 +1,146 @@
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router";
 import {
+  AlertCircle,
   Check,
   CreditCard,
   Download,
   FileText,
   HelpCircle,
+  LoaderCircle,
   Mail,
   ReceiptText,
   ShieldCheck,
 } from "lucide-react";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getPaymentConfirmation } from "@/services/paymentLinks";
+import type { PaymentConfirmation } from "../../shared/types";
 
-type PaymentSuccessPageProps = {
-  productName: string;
-  amount: number;
-  currency?: string;
-  paymentIntentId: string;
-  customerEmail: string;
-  paymentDate: string;
-  cardBrand?: string;
-  cardLast4?: string;
-  downloadUrl?: string;
-  supportEmail?: string;
+const POLL_INTERVAL_MS = 2000;
+const MAX_POLL_ATTEMPTS = 15;
+
+export function PaymentSuccessPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const paymentIntentId = searchParams.get("payment_intent");
+
+  const [payment, setPayment] = useState<PaymentConfirmation>();
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [isStillProcessing, setIsStillProcessing] = useState(false);
+
+  useEffect(() => {
+    if (!slug || !paymentIntentId) {
+      setErrorMessage("Payment details are missing from this link.");
+      return;
+    }
+
+    let isCancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let attempts = 0;
+
+    async function loadPayment() {
+      attempts += 1;
+
+      try {
+        const data = await getPaymentConfirmation(slug!, paymentIntentId!);
+
+        if (isCancelled) return;
+
+        setPayment(data);
+
+        // The webhook can arrive a moment after Stripe redirects the customer,
+        // so keep checking until the payment leaves the pending states.
+        if (data.status === "PENDING" || data.status === "PROCESSING") {
+          if (attempts < MAX_POLL_ATTEMPTS) {
+            timeoutId = setTimeout(loadPayment, POLL_INTERVAL_MS);
+          } else {
+            setIsStillProcessing(true);
+          }
+        }
+      } catch (error) {
+        if (isCancelled) return;
+
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Unable to load your payment details.",
+        );
+      }
+    }
+
+    void loadPayment();
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [slug, paymentIntentId]);
+
+  if (errorMessage) {
+    return (
+      <PaymentStatusMessage
+        variant="destructive"
+        title="Payment details unavailable"
+        message={errorMessage}
+      />
+    );
+  }
+
+  if (payment?.status === "FAILED" || payment?.status === "CANCELED") {
+    return (
+      <PaymentStatusMessage
+        variant="destructive"
+        title="Payment not completed"
+        message="Your payment was not completed and you have not been charged."
+      />
+    );
+  }
+
+  if (isStillProcessing) {
+    return (
+      <PaymentStatusMessage
+        title="Payment is still processing"
+        message="Your payment is taking longer than usual to confirm. You will receive an email once it is complete."
+      />
+    );
+  }
+
+  if (!payment || payment.status !== "SUCCEEDED") {
+    return <PaymentConfirming />;
+  }
+
+  return <PaymentSuccessDetails payment={payment} />;
+}
+
+type PaymentSuccessDetailsProps = {
+  payment: PaymentConfirmation;
 };
 
-export function PaymentSuccessPage({
-  productName,
-  amount,
-  currency = "NZD",
-  paymentIntentId,
-  customerEmail,
-  paymentDate,
-  cardBrand = "Visa",
-  cardLast4 = "1234",
-  downloadUrl,
-  supportEmail = "support@paypilot.app",
-}: PaymentSuccessPageProps) {
+function PaymentSuccessDetails({ payment }: PaymentSuccessDetailsProps) {
+  const {
+    productName,
+    amount,
+    currency,
+    paymentIntentId,
+    customerEmail,
+    paidAt,
+    downloadUrl,
+    supportEmail,
+  } = payment;
+
   const formattedAmount = new Intl.NumberFormat("en-NZ", {
     style: "currency",
-    currency,
+    currency: currency.toUpperCase(),
   }).format(amount);
+
+  const paymentDate = new Intl.DateTimeFormat("en-NZ", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(paidAt));
 
   const handleDownload = () => {
     if (!downloadUrl) return;
@@ -122,12 +221,6 @@ export function PaymentSuccessPage({
                     label="Date"
                     value={paymentDate}
                   />
-
-                  <SummaryRow
-                    icon={<CreditCard className="size-4" />}
-                    label="Payment method"
-                    value={`${cardBrand} •••• ${cardLast4}`}
-                  />
                 </dl>
               </div>
 
@@ -143,10 +236,12 @@ export function PaymentSuccessPage({
                         Payment complete
                       </p>
 
-                      <p className="mt-2 text-sm leading-6 text-emerald-800">
-                        A confirmation has been sent to{" "}
-                        <span className="font-medium">{customerEmail}</span>
-                      </p>
+                      {customerEmail && (
+                        <p className="mt-2 text-sm leading-6 text-emerald-800">
+                          A confirmation has been sent to{" "}
+                          <span className="font-medium">{customerEmail}</span>
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -274,5 +369,43 @@ function SummaryRow({ icon, label, value, mono = false }: SummaryRowProps) {
         {value}
       </dd>
     </div>
+  );
+}
+
+function PaymentConfirming() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-muted/30">
+      <div className="text-center">
+        <LoaderCircle className="mx-auto size-8 animate-spin text-primary" />
+
+        <p className="mt-4 text-sm text-muted-foreground">
+          Confirming your payment...
+        </p>
+      </div>
+    </main>
+  );
+}
+
+type PaymentStatusMessageProps = {
+  title: string;
+  message: string;
+  variant?: "default" | "destructive";
+};
+
+function PaymentStatusMessage({
+  title,
+  message,
+  variant = "default",
+}: PaymentStatusMessageProps) {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
+      <Alert variant={variant} className="max-w-md">
+        <AlertCircle className="size-4" />
+
+        <AlertTitle>{title}</AlertTitle>
+
+        <AlertDescription>{message}</AlertDescription>
+      </Alert>
+    </main>
   );
 }

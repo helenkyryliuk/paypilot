@@ -51,6 +51,16 @@ export async function getPublicPaymentPage(
       throw new Error("Stripe did not return a client secret.");
     }
 
+    await prisma.payment.create({
+      data: {
+        stripePaymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        status: "PENDING",
+        paymentLinkId: paymentLink.id,
+      },
+    });
+
     return response.json({
       paymentLink: {
         id: paymentLink.id,
@@ -75,15 +85,99 @@ export async function getPublicPaymentPage(
   }
 }
 
+export async function getPaymentConfirmation(
+  request: Request<{ slug: string; paymentIntentId: string }>,
+  response: Response,
+) {
+  try {
+    const payment = await prisma.payment.findUnique({
+      where: {
+        stripePaymentIntentId: request.params.paymentIntentId,
+      },
+
+      include: {
+        paymentLink: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    if (!payment || payment.paymentLink.slug !== request.params.slug) {
+      return response.status(404).json({
+        message: "Payment not found.",
+      });
+    }
+
+    const isSucceeded = payment.status === "SUCCEEDED";
+
+    return response.json({
+      status: payment.status,
+      productName: payment.paymentLink.productName,
+      amount: payment.amount / 100,
+      currency: payment.currency,
+      paymentIntentId: payment.stripePaymentIntentId,
+      customerEmail: payment.customerEmail,
+      paidAt: payment.updatedAt.toISOString(),
+      downloadUrl: isSucceeded ? payment.paymentLink.downloadUrl : null,
+      supportEmail: payment.paymentLink.user.email,
+    });
+  } catch (error) {
+    console.error("Get payment confirmation error:", error);
+
+    return response.status(500).json({
+      message: "Unable to load payment.",
+    });
+  }
+}
+
 export async function handlePaymentIntentSucceeded(
   paymentIntent: Stripe.PaymentIntent,
 ) {
-  await prisma.payment.update({
+  const paymentLinkId = paymentIntent.metadata.paymentLinkId;
+
+  if (!paymentLinkId) {
+    console.log(
+      `PaymentIntent ${paymentIntent.id} has no paymentLinkId, skipping.`,
+    );
+    return;
+  }
+
+  const expandedPaymentIntent = await stripe.paymentIntents.retrieve(
+    paymentIntent.id,
+    { expand: ["latest_charge"] },
+  );
+
+  const latestCharge = expandedPaymentIntent.latest_charge;
+  const billingDetails =
+    latestCharge && typeof latestCharge !== "string"
+      ? latestCharge.billing_details
+      : undefined;
+
+  const customerEmail =
+    billingDetails?.email ?? paymentIntent.receipt_email ?? null;
+  const customerName = billingDetails?.name ?? null;
+
+  await prisma.payment.upsert({
     where: {
       stripePaymentIntentId: paymentIntent.id,
     },
-    data: {
+
+    update: {
       status: "SUCCEEDED",
+      customerEmail,
+      customerName,
+    },
+
+    create: {
+      stripePaymentIntentId: paymentIntent.id,
+      amount: paymentIntent.amount,
+      currency: paymentIntent.currency,
+      status: "SUCCEEDED",
+      customerEmail,
+      customerName,
+      paymentLinkId,
     },
   });
 }

@@ -8,7 +8,7 @@ import { CreatePaymentPage } from "./CreatePaymentPage.tsx";
 import { DashboardPage } from "./DashboardPage.tsx";
 import { AnalyticsPage } from "./AnalyticsPage.tsx";
 import { PublicPaymentPage } from "./payment/PublicPaymentPage.tsx";
-// import { PaymentSuccessPage } from "./payment/PaymentSuccessPage.tsx";
+import { PaymentSuccessPage } from "./payment/PaymentSuccessPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,10 +27,10 @@ const router = createBrowserRouter([
     path: "/analytics",
     element: <AnalyticsPage />,
   },
-  // {
-  //   path: "/pay/:slug/success",
-  //   element: <PaymentSuccessPage />,
-  // },
+  {
+    path: "/pay/:slug/success",
+    element: <PaymentSuccessPage />,
+  },
   // {
   //   path: "*", // Catch-all route for 404 pages
   //   element: <NotFound />,

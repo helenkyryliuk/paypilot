@@ -52,7 +52,7 @@ model Payment {
   status                PaymentStatus @default(PENDING)
 
   customerName  String?
-  customerEmail String
+  customerEmail String?
 
   paymentLinkId String
   paymentLink   PaymentLink @relation(fields: [paymentLinkId], references: [id], onDelete: Restrict)
