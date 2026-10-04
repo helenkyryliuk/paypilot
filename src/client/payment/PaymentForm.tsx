@@ -83,8 +83,6 @@ export function PaymentForm({ paymentLink }: PaymentFormProps) {
       window.location.origin,
     );
 
-    returnUrl.searchParams.set("email", trimmedEmail);
-
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
 

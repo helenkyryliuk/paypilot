@@ -22,3 +22,22 @@ export type PaymentLinkParams = {
 export type CreatePaymentIntentResponse = {
   clientSecret: string;
 };
+
+export type PaymentStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "SUCCEEDED"
+  | "FAILED"
+  | "CANCELED";
+
+export type PaymentConfirmation = {
+  status: PaymentStatus;
+  productName: string;
+  amount: number;
+  currency: string;
+  paymentIntentId: string;
+  customerEmail: string | null;
+  paidAt: string;
+  downloadUrl: string | null;
+  supportEmail: string;
+};
