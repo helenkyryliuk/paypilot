@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { ExternalLink, LayoutDashboard, Plus, Trash2 } from "lucide-react";
+import {
+  Check,
+  Copy,
+  ExternalLink,
+  LayoutDashboard,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -11,10 +18,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar.tsx";
-import { CopyLinkInput } from "./CopyLinkInput.tsx";
 import {
   deletePaymentLink,
   getPaymentLinks,
@@ -27,6 +42,31 @@ function formatAmount(amountInCents: number, currency: string): string {
     style: "currency",
     currency: currency.toUpperCase(),
   }).format(amountInCents / 100);
+}
+
+function CopyLinkButton({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  }
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleCopy}
+      aria-label={copied ? "Copied" : "Copy link"}
+    >
+      {copied ? <Check className="text-green-600" /> : <Copy />}
+    </Button>
+  );
 }
 
 export function DashboardPage() {
@@ -117,9 +157,9 @@ export function DashboardPage() {
             )}
 
             {isLoading ? (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="flex flex-col gap-2">
                 {[0, 1, 2].map((index) => (
-                  <Skeleton key={index} className="h-56 w-full rounded-xl" />
+                  <Skeleton key={index} className="h-12 w-full" />
                 ))}
               </div>
             ) : paymentLinks.length === 0 && !error ? (
@@ -138,96 +178,115 @@ export function DashboardPage() {
                 </CardFooter>
               </Card>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {paymentLinks.map((paymentLink) => {
-                  const checkoutUrl = `${window.location.origin}/pay/${paymentLink.slug}`;
-                  const isPending = pendingId === paymentLink.id;
+              <Card>
+                <CardHeader>
+                  <CardTitle>Payment links</CardTitle>
+                  <CardDescription>
+                    Payments and revenue include completed payments only.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Price</TableHead>
+                        <TableHead className="text-right">Payments</TableHead>
+                        <TableHead className="text-right">Revenue</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paymentLinks.map((paymentLink) => {
+                        const checkoutUrl = `${window.location.origin}/pay/${paymentLink.slug}`;
+                        const isPending = pendingId === paymentLink.id;
 
-                  return (
-                    <Card key={paymentLink.id} className="w-full">
-                      <CardHeader>
-                        <div className="flex items-start justify-between gap-2">
-                          <CardTitle>{paymentLink.productName}</CardTitle>
-                          <span
-                            className={
-                              paymentLink.isActive
-                                ? "rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800"
-                                : "rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600"
-                            }
-                          >
-                            {paymentLink.isActive ? "Active" : "Inactive"}
-                          </span>
-                        </div>
-                        <CardDescription>
-                          {paymentLink.description ?? "No description"}
-                        </CardDescription>
-                      </CardHeader>
-
-                      <CardContent className="flex flex-col gap-3">
-                        <div className="grid grid-cols-3 gap-2 text-sm">
-                          <div>
-                            <div className="text-gray-500">Price</div>
-                            <div className="font-semibold">
+                        return (
+                          <TableRow key={paymentLink.id}>
+                            <TableCell>
+                              <div className="font-medium">
+                                {paymentLink.productName}
+                              </div>
+                              <div className="text-muted-foreground text-xs">
+                                /pay/{paymentLink.slug}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  paymentLink.isActive ? "default" : "secondary"
+                                }
+                              >
+                                {paymentLink.isActive ? "Active" : "Inactive"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
                               {formatAmount(
                                 paymentLink.amount,
                                 paymentLink.currency,
                               )}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-gray-500">Payments</div>
-                            <div className="font-semibold">
+                            </TableCell>
+                            <TableCell className="text-right">
                               {paymentLink.totalPayments ?? 0}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-gray-500">Revenue</div>
-                            <div className="font-semibold">
+                            </TableCell>
+                            <TableCell className="text-right">
                               {formatAmount(
                                 paymentLink.revenue ?? 0,
                                 paymentLink.currency,
                               )}
-                            </div>
-                          </div>
-                        </div>
-
-                        <CopyLinkInput value={checkoutUrl} />
-                      </CardContent>
-
-                      <CardFooter className="flex gap-2">
-                        <a
-                          href={checkoutUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={buttonVariants({
-                            variant: "outline",
-                            size: "sm",
-                          })}
-                        >
-                          <ExternalLink /> Open
-                        </a>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          disabled={isPending}
-                          onClick={() => handleToggleStatus(paymentLink)}
-                        >
-                          {paymentLink.isActive ? "Deactivate" : "Activate"}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          disabled={isPending}
-                          onClick={() => handleDelete(paymentLink)}
-                          aria-label={`Delete ${paymentLink.productName}`}
-                        >
-                          <Trash2 />
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  );
-                })}
-              </div>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(
+                                paymentLink.createdAt,
+                              ).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center justify-end gap-1">
+                                <CopyLinkButton value={checkoutUrl} />
+                                <a
+                                  href={checkoutUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  aria-label="Open checkout page"
+                                  className={buttonVariants({
+                                    variant: "ghost",
+                                    size: "icon",
+                                  })}
+                                >
+                                  <ExternalLink />
+                                </a>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  disabled={isPending}
+                                  onClick={() =>
+                                    handleToggleStatus(paymentLink)
+                                  }
+                                >
+                                  {paymentLink.isActive
+                                    ? "Deactivate"
+                                    : "Activate"}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={isPending}
+                                  onClick={() => handleDelete(paymentLink)}
+                                  aria-label={`Delete ${paymentLink.productName}`}
+                                >
+                                  <Trash2 />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             )}
           </div>
         </main>
