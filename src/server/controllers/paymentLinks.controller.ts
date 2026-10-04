@@ -78,11 +78,8 @@ export async function getPaymentLinks(
   try {
     const paymentLinks = await prisma.paymentLink.findMany({
       include: {
-        _count: {
-          select: {
-            payments: true,
-          },
-        },
+        // A PENDING payment is created every time the checkout page loads,
+        // so only completed payments count towards the totals.
         payments: {
           where: {
             status: "SUCCEEDED",
@@ -99,13 +96,12 @@ export async function getPaymentLinks(
 
     const result = paymentLinks.map((paymentLink) => ({
       ...paymentLink,
-      totalPayments: paymentLink._count.payments,
+      totalPayments: paymentLink.payments.length,
       revenue: paymentLink.payments.reduce(
         (total, payment) => total + payment.amount,
         0,
       ),
       payments: undefined,
-      _count: undefined,
     }));
 
     response.json(result);
