@@ -40,7 +40,6 @@ import { AppSidebar } from "./AppSidebar.tsx";
 import { useState } from "react";
 import {
   Rocket,
-  Check,
   Copy,
   Link,
   ExternalLink,
@@ -51,7 +50,6 @@ import {
   BadgeDollarSign,
   UserRound,
 } from "lucide-react";
-import { CopyLinkInput } from "./CopyLinkInput.tsx";
 import { createPaymentLink } from "../api/paymentLinks.api.ts";
 import ReactCountryFlag from "react-country-flag";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -80,13 +78,13 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function CreatePaymentPage() {
-  const [slug, setSlug] = useState<String>();
+  const [slug, setSlug] = useState<string>();
   const location = useLocation();
 
   const {
     handleSubmit,
     control,
-    formState: { isSubmitting, isSubmitted, isSubmitSuccessful },
+    formState: { isSubmitting, isSubmitSuccessful },
     watch,
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -236,7 +234,10 @@ export function CreatePaymentPage() {
                                   <FieldLabel htmlFor="form-rhf-demo-title">
                                     Currency
                                   </FieldLabel>
-                                  <Select defaultValue="nzd">
+                                  <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                  >
                                     <SelectTrigger className="w-[200px] gap-2">
                                       <SelectValue placeholder="Select currency">
                                         <div className="flex items-center gap-2">
