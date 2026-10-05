@@ -24,8 +24,6 @@ export function PublicPaymentPage() {
       setIsLoading(false);
       return;
     }
-    console.log(slug);
-    console.log(pageData);
 
     const controller = new AbortController();
 

@@ -6,10 +6,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupAction,
-  SidebarGroupContent,
 } from "./components/ui/sidebar";
 import { NavLink } from "react-router";
 import {
@@ -27,7 +23,7 @@ const navigationItems = [
 ];
 
 interface AppSidebarProps {
-  pathname: String;
+  pathname: string;
 }
 
 export function AppSidebar({ pathname }: AppSidebarProps) {

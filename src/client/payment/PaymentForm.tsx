@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { PublicPaymentLink } from "@/types/payment-link";
+import type { PublicPaymentLink } from "../../shared/types";
 
 type PaymentFormProps = {
   paymentLink: PublicPaymentLink;
