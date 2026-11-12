@@ -3,7 +3,7 @@ import type {
   PaymentPageData,
 } from "../../shared/types";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL ?? "/api";
 
 export async function getPaymentPage(slug: string): Promise<PaymentPageData> {
   const response = await fetch(

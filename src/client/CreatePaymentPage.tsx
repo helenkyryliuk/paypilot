@@ -151,7 +151,7 @@ export function CreatePaymentPage() {
                     Checkout URL
                   </label>
                   <ButtonGroup className="w-full">
-                    <Input value={`http://localhost:5000/pay/${slug}`} />
+                    <Input value={`${window.location.origin}/pay/${slug}`} readOnly />
                     <Button variant="outline" aria-label="Search">
                       <Copy />
                     </Button>

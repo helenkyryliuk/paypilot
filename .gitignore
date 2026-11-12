@@ -25,3 +25,6 @@ dist-ssr
 *.env
 
 /src/generated/prisma
+
+# Vercel CLI local build output
+.vercel

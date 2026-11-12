@@ -4,11 +4,11 @@ import {
   deletePaymentLink,
   getPaymentLinks,
   updatePaymentLinkStatus,
-} from "../controllers/paymentLinks.controller.ts";
+} from "../controllers/paymentLinks.controller.js";
 import {
   getPaymentConfirmation,
   getPublicPaymentPage,
-} from "../controllers/payments.controller.ts";
+} from "../controllers/payments.controller.js";
 
 const router = Router();
 
