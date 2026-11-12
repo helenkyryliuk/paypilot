@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import type { Request, Response } from "express";
-import { prisma } from "../lib/prisma.ts";
+import { prisma } from "../lib/prisma.js";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 

@@ -1,4 +1,4 @@
-import { prisma } from "../server/lib/prisma.ts";
+import { prisma } from "../server/lib/prisma.js";
 
 async function main() {
   // Create Helen or return the existing Helen record.
