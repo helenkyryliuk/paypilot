@@ -16,6 +16,7 @@ import "./LandingPage.css";
 import logoUrl from "./assets/logo.svg";
 
 const GITHUB_REPO_URL = "https://github.com/helenkyryliuk/paypilot";
+const LINKEDIN_URL = "https://www.linkedin.com/in/helenkyryliuk/";
 
 const steps = [
   {
@@ -227,7 +228,7 @@ function TechStack() {
     <section className="border-t border-(--line)">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <SectionHeading eyebrow="Under the hood">
-          A full-stack TypeScript app
+          A <span className="text-gradient">full-stack TypeScript</span> app
         </SectionHeading>
         <p className="mx-auto mt-4 max-w-2xl text-center leading-relaxed">
           A React frontend talks to an Express REST API. Prisma stores links and
@@ -282,7 +283,17 @@ function SiteFooter() {
     <footer className="border-t border-(--line)">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm sm:flex-row sm:px-6">
         <Brand />
-        <p>Designed and built by Helen Kyryliuk</p>
+        <p>
+          Designed and built by{" "}
+          <a
+            href={LINKEDIN_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-(--ink) underline decoration-(--line) underline-offset-4 hover:decoration-(--brand-teal)"
+          >
+            Helen Kyryliuk
+          </a>
+        </p>
         <a
           href={GITHUB_REPO_URL}
           target="_blank"
