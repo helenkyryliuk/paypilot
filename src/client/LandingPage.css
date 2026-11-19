@@ -21,6 +21,11 @@
     var(--brand-blue)
   );
 
+  /* Solid colour for buttons, so the gradient stays a highlight for text.
+     Change this one line to try another colour. */
+  --button: #0f1b3d;
+  --button-hover: #1b2a55;
+
   --ink: #0b1220;
   --ink-muted: #5b6475;
   --line: #e7eaf0;
@@ -56,7 +61,7 @@
 }
 
 .landing .lp-title {
-  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.035em;
@@ -90,13 +95,22 @@
     );
 }
 
-/* Icon tile used on step and feature cards. */
+/* Small uppercase label above a heading. */
+.lp-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand-teal);
+}
+
+/* Icon tile used on step and feature cards: a light tint, not the gradient. */
 .lp-icon-tile {
   display: grid;
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 0.75rem;
-  color: #fff;
-  background: var(--brand-gradient);
+  color: var(--brand-teal);
+  background: rgb(14 154 154 / 0.1);
 }
