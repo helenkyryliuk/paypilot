@@ -117,7 +117,7 @@ function SiteHeader() {
 function Hero() {
   return (
     <section className="lp-hero-glow">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-16 pb-20 sm:px-6 sm:pb-40 lg:grid-cols-[1.1fr_1fr] lg:pt-24 lg:pb-44">
+      <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-16 pb-20 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-24 lg:pb-28">
         <div>
           <p className="lp-eyebrow">Payments made simpler</p>
 
@@ -127,8 +127,9 @@ function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-relaxed">
-            Turn your products, services and content into one simple payment
-            link. Share it anywhere and get paid through Stripe.
+            Sell your products, services and content wherever you share.
+            Buyers pay securely through Stripe, and every payment shows up in
+            your dashboard.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -254,11 +255,12 @@ function ClosingCta() {
     <section className="px-4 pb-20 sm:px-6">
       <div className="bg-brand-gradient mx-auto flex max-w-6xl flex-col items-center gap-6 rounded-3xl px-6 py-14 text-center">
         <h2 className="lp-section-title text-white!">
-          Curious how it's built?
+          <span className="block">Take your payments to the next level.</span>
+          <span className="block">Move your business forward.</span>
         </h2>
         <p className="max-w-xl text-white/90">
-          Browse the source code, from the Stripe webhook to the React
-          components. The live demo is coming soon.
+          PayPilot is a portfolio project. Explore the code, from the Stripe
+          webhook to the React components. The live demo is coming soon.
         </p>
         <a
           href={GITHUB_REPO_URL}
@@ -381,40 +383,13 @@ function GitHubMark({ className }: { className?: string }) {
   );
 }
 
-// Floating "total revenue" card from the creator's dashboard. Illustrative
-// numbers, labelled as such on the card.
-function RevenueCard() {
-  return (
-    <div className="mt-4 rounded-2xl border border-(--line) bg-white p-5 shadow-lg sm:absolute sm:-bottom-36 sm:-left-24 sm:mt-0 sm:w-64">
-      <p className="text-xs font-medium tracking-wide uppercase">
-        Total revenue
-      </p>
-      <p className="mt-1 text-3xl font-bold tracking-tight text-(--ink)">
-        NZ$24,850.00
-      </p>
-      <div className="mt-3 flex items-center justify-between text-sm">
-        <span>Recent transactions</span>
-        <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-          +12.8%
-        </span>
-      </div>
-      <div className="mt-3 space-y-2" aria-hidden="true">
-        <div className="h-2 w-full rounded-full bg-(--brand-teal)/12" />
-        <div className="h-2 w-3/4 rounded-full bg-(--brand-teal)/12" />
-        <div className="h-2 w-1/2 rounded-full bg-(--brand-teal)/12" />
-      </div>
-      <p className="mt-3 text-xs text-slate-400">Illustrative dashboard preview</p>
-    </div>
-  );
-}
-
 // An illustration of PayPilot's checkout page, built from HTML (not a
 // screenshot) so it stays sharp at any size. Not interactive.
 function CheckoutPreview() {
   return (
     <div
       role="img"
-      aria-label="Preview of a PayPilot checkout page for a NZ$120 coaching session, with a dashboard card showing NZ$24,850 total revenue"
+      aria-label="Preview of a PayPilot checkout page for a NZ$120 coaching session"
       className="relative mx-auto w-full max-w-sm"
     >
       <div className="rounded-3xl border border-(--line) bg-white p-6 shadow-[0_24px_60px_-20px_rgb(11_18_32/0.25)]">
@@ -452,8 +427,6 @@ function CheckoutPreview() {
           Secured by Stripe
         </p>
       </div>
-
-      <RevenueCard />
 
       <div className="absolute -top-5 -right-3 flex items-center gap-2.5 rounded-2xl border border-(--line) bg-white px-4 py-3 shadow-lg sm:-right-10">
         <CircleCheck className="size-5 text-(--brand-green)" aria-hidden="true" />
