@@ -2,7 +2,7 @@
 
 PayPilot is a full-stack payment links application designed for content creators and digital product sellers to create shareable payment links and accept secure online payments through Stripe.
 
-This MVP demonstrates modern frontend architecture, TypeScript, API integration, payment workflows, form handling, testing, and full-stack collaboration between a React frontend and Node.js backend.
+This MVP demonstrates modern frontend architecture, TypeScript, API integration, payment workflows, form handling, and full-stack collaboration between a React frontend and Node.js backend.
 
 **🔗 Live site: [paypilot-gamma.vercel.app](https://paypilot-gamma.vercel.app)**
 
@@ -54,7 +54,7 @@ The landing page is live. The interactive demo of the creator dashboard is comin
 - Neon
 - Stripe API
 
-### Testing
+### Testing (planned)
 
 - React Testing Library
 - Jest
@@ -275,16 +275,15 @@ Examples include:
 - Proper form labels
 - Keyboard-accessible interactions
 - Accessible error messages
-- React Testing Library queries based on roles and labels
 - Clear loading and payment feedback
 
 ---
 
-## 🧪 Testing Strategy
+## 🧪 Testing Strategy (planned)
 
-Frontend tests focus primarily on user behaviour rather than implementation details.
+Tests are not written yet; they are the next milestone, starting with the payment flow and the Stripe webhook.
 
-Examples include testing:
+The planned frontend tests focus on user behaviour rather than implementation details, covering:
 
 - Form validation
 - Payment link creation
@@ -294,7 +293,7 @@ Examples include testing:
 - Accessible form controls
 - Success and error flows
 
-Example:
+Example of the planned style:
 
 ```tsx
 expect(
@@ -455,7 +454,7 @@ The project focuses on demonstrating:
 - Maintainable component design
 - Form architecture
 - Accessibility
-- Automated testing
+- Automated testing (in progress)
 - Error and edge-case handling
 - Product-focused frontend development
 
@@ -474,7 +473,7 @@ Potential future additions include:
 - Improved webhook event handling
 - Additional currencies
 - Subscription payments
-- Expanded automated test coverage
+- Automated tests for the payment flow and Stripe webhook
 
 ---
 
