@@ -104,7 +104,8 @@
   color: var(--brand-teal);
 }
 
-/* Icon tile used on step and feature cards: a light tint, not the gradient. */
+/* Icon tile used on step and feature cards: the brand gradient at low
+   opacity, so it hints at the brand without competing with the headings. */
 .lp-icon-tile {
   display: grid;
   place-items: center;
@@ -112,5 +113,9 @@
   height: 2.75rem;
   border-radius: 0.75rem;
   color: var(--brand-teal);
-  background: rgb(14 154 154 / 0.1);
+  background: linear-gradient(
+    135deg,
+    rgb(18 161 80 / 0.14),
+    rgb(22 131 216 / 0.14)
+  );
 }

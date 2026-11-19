@@ -117,7 +117,7 @@ function SiteHeader() {
 function Hero() {
   return (
     <section className="lp-hero-glow">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-16 pb-20 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-24 lg:pb-28">
+      <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-16 pb-20 sm:px-6 sm:pb-40 lg:grid-cols-[1.1fr_1fr] lg:pt-24 lg:pb-44">
         <div>
           <p className="lp-eyebrow">Payments made simpler</p>
 
@@ -385,7 +385,7 @@ function GitHubMark({ className }: { className?: string }) {
 // numbers, labelled as such on the card.
 function RevenueCard() {
   return (
-    <div className="mt-4 rounded-2xl border border-(--line) bg-white p-5 shadow-lg sm:absolute sm:-bottom-12 sm:-left-16 sm:mt-0 sm:w-72">
+    <div className="mt-4 rounded-2xl border border-(--line) bg-white p-5 shadow-lg sm:absolute sm:-bottom-36 sm:-left-24 sm:mt-0 sm:w-64">
       <p className="text-xs font-medium tracking-wide uppercase">
         Total revenue
       </p>
