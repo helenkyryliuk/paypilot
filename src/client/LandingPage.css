@@ -1,0 +1,121 @@
+/*
+ * Landing page styles.
+ * Layout uses Tailwind classes in LandingPage.tsx. This file holds what Tailwind
+ * can't easily do here:
+ * - the brand gradient
+ * - heading typography. index.css styles h1/h2 globally, and those plain
+ *   (unlayered) rules beat Tailwind's utilities, so headings are styled with
+ *   class selectors here instead.
+ */
+
+.landing {
+  /* Brand gradient: green -> teal -> blue. Slightly darker than the original
+     reference so it stays readable (>= 3:1 contrast) on a white background. */
+  --brand-green: #12a150;
+  --brand-teal: #0e9a9a;
+  --brand-blue: #1683d8;
+  --brand-gradient: linear-gradient(
+    90deg,
+    var(--brand-green),
+    var(--brand-teal),
+    var(--brand-blue)
+  );
+
+  /* Solid colour for buttons, so the gradient stays a highlight for text.
+     Change this one line to try another colour. */
+  --button: #0f1b3d;
+  --button-hover: #1b2a55;
+
+  --ink: #0b1220;
+  --ink-muted: #5b6475;
+  --line: #e7eaf0;
+  --surface: #f7f9fb;
+
+  color: var(--ink-muted);
+  font-size: 16px;
+  letter-spacing: normal;
+  background: #fff;
+}
+
+/* Gradient text: paint the gradient as a background, clip it to the glyphs,
+   and make the text itself transparent so the gradient shows through. */
+.text-gradient {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-brand-gradient {
+  background: var(--brand-gradient);
+}
+
+.landing .lp-title,
+.landing .lp-section-title,
+.landing .lp-card-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  color: var(--ink);
+  /* Spread words evenly across lines instead of leaving one word alone. */
+  text-wrap: balance;
+}
+
+.landing .lp-title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.landing .lp-section-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.landing .lp-card-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Soft colour wash behind the hero. Decorative only. */
+.lp-hero-glow {
+  background:
+    radial-gradient(
+      40rem 24rem at 15% 0%,
+      rgb(18 161 80 / 0.1),
+      transparent 70%
+    ),
+    radial-gradient(
+      40rem 24rem at 85% 10%,
+      rgb(22 131 216 / 0.12),
+      transparent 70%
+    );
+}
+
+/* Small uppercase label above a heading. */
+.lp-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand-teal);
+}
+
+/* Icon tile used on step and feature cards: the brand gradient at low
+   opacity, so it hints at the brand without competing with the headings. */
+.lp-icon-tile {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  color: var(--brand-teal);
+  background: linear-gradient(
+    135deg,
+    rgb(18 161 80 / 0.07),
+    rgb(22 131 216 / 0.07)
+  );
+}

@@ -1,18 +1,26 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
+import type { RouteObject } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import "./index.css";
-// import { OnlinePaymentForm } from "./OnlinePaymentForm.tsx";
 import { CreatePaymentPage } from "./CreatePaymentPage.tsx";
 import { DashboardPage } from "./DashboardPage.tsx";
 import { AnalyticsPage } from "./AnalyticsPage.tsx";
+import { LandingPage } from "./LandingPage.tsx";
 import { PublicPaymentPage } from "./payment/PublicPaymentPage.tsx";
 import { PaymentSuccessPage } from "./payment/PaymentSuccessPage.tsx";
 
-const router = createBrowserRouter([
+// Feature flag: while the app is unfinished, production shows only the
+// landing page. Set VITE_APP_ENABLED=true (e.g. in Vercel) to turn the app on.
+// Always on in local development (`npm run dev`) so you can keep building.
+// Vite inlines VITE_* variables at build time, so changing it needs a redeploy.
+const isAppEnabled =
+  import.meta.env.DEV || import.meta.env.VITE_APP_ENABLED === "true";
+
+const appRoutes: RouteObject[] = [
   {
-    path: "/",
+    path: "/dashboard",
     element: <DashboardPage />,
   },
   {
@@ -31,10 +39,19 @@ const router = createBrowserRouter([
     path: "/pay/:slug/success",
     element: <PaymentSuccessPage />,
   },
-  // {
-  //   path: "*", // Catch-all route for 404 pages
-  //   element: <NotFound />,
-  // },
+];
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
+  ...(isAppEnabled ? appRoutes : []),
+  // Any unknown address (or an app page while the app is off) goes home.
+  {
+    path: "*",
+    element: <Navigate to="/" replace />,
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(
