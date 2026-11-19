@@ -185,10 +185,7 @@ function HowItWorks() {
 
 function Features() {
   return (
-    <section
-      id="features"
-      className="scroll-mt-16 border-t border-(--line) bg-(--surface)"
-    >
+    <section id="features" className="lp-dark scroll-mt-16">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <SectionHeading eyebrow="Features">
           Everything a solo creator needs{" "}
@@ -199,7 +196,7 @@ function Features() {
           {features.map((feature) => (
             <li
               key={feature.title}
-              className="flex gap-4 rounded-2xl border border-(--line) bg-white p-6"
+              className="flex gap-4 rounded-2xl border border-white/10 bg-white/4 p-6 transition hover:border-white/20 hover:bg-white/7"
             >
               <span className="lp-icon-tile shrink-0" aria-hidden="true">
                 <feature.icon className="size-5" />
@@ -208,7 +205,7 @@ function Features() {
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="lp-card-title">{feature.title}</h3>
                   {feature.inProgress && (
-                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+                    <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs font-medium text-amber-300">
                       In progress
                     </span>
                   )}
