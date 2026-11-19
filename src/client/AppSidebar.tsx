@@ -68,7 +68,7 @@ export function AppSidebar({ pathname }: AppSidebarProps) {
         </div>
         <div className="footer-wrapper">
           <div className="footer-text">Helen Kyryliuk</div>
-          <div className="footer-description">helen.kyryl@gmail.com</div>
+          <div className="footer-description">helen@paypilot.dev</div>
         </div>
       </SidebarFooter>
     </Sidebar>

@@ -2,7 +2,13 @@
 
 PayPilot is a full-stack payment links application designed for content creators and digital product sellers to create shareable payment links and accept secure online payments through Stripe.
 
-This MVP demonstrates modern frontend architecture, TypeScript, API integration, payment workflows, form handling, testing, and full-stack collaboration between a React frontend and Node.js backend.
+This MVP demonstrates modern frontend architecture, TypeScript, API integration, payment workflows, form handling, and full-stack collaboration between a React frontend and Node.js backend.
+
+**🔗 Live site: [paypilot-gamma.vercel.app](https://paypilot-gamma.vercel.app)**
+
+The landing page is live. The interactive demo of the creator dashboard is coming soon.
+
+[![PayPilot landing page](docs/landing-page.png)](https://paypilot-gamma.vercel.app)
 
 ---
 
@@ -48,7 +54,7 @@ This MVP demonstrates modern frontend architecture, TypeScript, API integration,
 - Neon
 - Stripe API
 
-### Testing
+### Testing (planned)
 
 - React Testing Library
 - Jest
@@ -174,7 +180,7 @@ Example request:
 ### Stripe webhook
 
 ```http
-POST /api/webhooks/stripe
+POST /api/payments/webhook
 ```
 
 Stripe webhooks are used to synchronise payment status with PayPilot after payment events occur.
@@ -269,16 +275,15 @@ Examples include:
 - Proper form labels
 - Keyboard-accessible interactions
 - Accessible error messages
-- React Testing Library queries based on roles and labels
 - Clear loading and payment feedback
 
 ---
 
-## 🧪 Testing Strategy
+## 🧪 Testing Strategy (planned)
 
-Frontend tests focus primarily on user behaviour rather than implementation details.
+Tests are not written yet; they are the next milestone, starting with the payment flow and the Stripe webhook.
 
-Examples include testing:
+The planned frontend tests focus on user behaviour rather than implementation details, covering:
 
 - Form validation
 - Payment link creation
@@ -288,7 +293,7 @@ Examples include testing:
 - Accessible form controls
 - Success and error flows
 
-Example:
+Example of the planned style:
 
 ```tsx
 expect(
@@ -315,23 +320,24 @@ PayPilot follows several important payment security principles:
 
 ## ⚙️ Environment Variables
 
-Create a `.env` file for the backend:
+Copy `.env.example` to `.env` in the project root and fill it in. One file serves both the server and the browser code:
 
 ```env
+# Server (never exposed to the browser)
 DATABASE_URL=your_neon_database_url
-
 STRIPE_SECRET_KEY=your_stripe_test_secret_key
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-
 PORT=5000
-```
 
-Create a frontend `.env` file:
-
-```env
-VITE_API_URL=http://localhost:5000/api
+# Browser (Vite builds VITE_* variables into the frontend)
 VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_test_publishable_key
+
+# Optional: production shows only the landing page unless this is "true".
+# Local development always has the app on.
+# VITE_APP_ENABLED=true
 ```
+
+The frontend calls the API on the same origin (`/api`), so no API URL is needed.
 
 > Never commit `.env` files or Stripe secret keys to Git.
 
@@ -339,83 +345,80 @@ VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_test_publishable_key
 
 ## 🚀 Getting Started
 
-### 1. Clone the repository
+The frontend and the Express API run together as one app.
+
+### 1. Clone the repository and install dependencies
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/paypilot.git
+git clone https://github.com/helenkyryliuk/paypilot.git
+```
 
+```bash
 cd paypilot
 ```
 
----
-
-### 2. Install frontend dependencies
-
 ```bash
-cd client
 npm install
 ```
 
+Installing also generates the Prisma client (`postinstall` runs `prisma generate`).
+
 ---
 
-### 3. Install backend dependencies
+### 2. Configure environment variables
 
 ```bash
-cd ../server
-npm install
+cp .env.example .env
 ```
 
----
-
-### 4. Configure environment variables
-
-Create the required `.env` files using the examples above.
+Then fill in the values described in the Environment Variables section above.
 
 ---
 
-### 5. Generate Prisma client
-
-```bash
-npx prisma generate
-```
-
----
-
-### 6. Run database migrations
+### 3. Set up the database
 
 ```bash
 npx prisma migrate dev
 ```
 
+```bash
+npm run db:seed
+```
+
+The seed script creates the demo seller account that payment links belong to.
+
 ---
 
-### 7. Start the backend
+### 4. Start the app
 
 ```bash
 npm run dev
 ```
 
+Open [http://localhost:5000](http://localhost:5000). The React app and the API share this port.
+
 ---
 
-### 8. Start the frontend
+## ☁️ Deployment
 
-In another terminal:
+PayPilot is deployed on **Vercel**, and every push to `main` deploys automatically:
 
-```bash
-cd client
-npm run dev
-```
+- The React app is built with Vite and served as static files.
+- The Express app runs as a single Vercel Function (`api/index.ts`). `vercel.json` routes `/api/*` to it and every other path to the React app.
+- Database schema changes are applied to production with `npm run db:migrate:deploy`.
+- `VITE_APP_ENABLED` is a feature flag: while it is unset, production serves only the landing page.
 
 ---
 
 ## 🧭 Main Pages
 
 ```text
-/dashboard
-/create
-/analytics
-/pay/:slug
-/success
+/                    Landing page
+/dashboard           Payment links dashboard
+/create-payment      Create a payment link
+/analytics           Analytics
+/pay/:slug           Public payment page
+/pay/:slug/success   Payment confirmation
 ```
 
 ### Dashboard
@@ -451,7 +454,7 @@ The project focuses on demonstrating:
 - Maintainable component design
 - Form architecture
 - Accessibility
-- Automated testing
+- Automated testing (in progress)
 - Error and edge-case handling
 - Product-focused frontend development
 
@@ -470,7 +473,7 @@ Potential future additions include:
 - Improved webhook event handling
 - Additional currencies
 - Subscription payments
-- Expanded automated test coverage
+- Automated tests for the payment flow and Stripe webhook
 
 ---
 
