@@ -8,6 +8,7 @@ import {
   SidebarMenuButton,
 } from "./components/ui/sidebar";
 import { NavLink } from "react-router";
+import logoUrl from "./assets/logo.svg";
 import {
   House,
   ChartNoAxesCombined,
@@ -16,7 +17,7 @@ import {
 } from "lucide-react";
 
 const navigationItems = [
-  { title: "Dashboard", url: "/", icon: House },
+  { title: "Dashboard", url: "/dashboard", icon: House },
   { title: "Create Payment", url: "/create-payment", icon: SquarePlus },
   { title: "Analytics", url: "/analytics", icon: ChartNoAxesCombined },
   { title: "Payment Links", url: "/payment-links", icon: ExternalLink },
@@ -31,9 +32,8 @@ export function AppSidebar({ pathname }: AppSidebarProps) {
     <Sidebar>
       <SidebarHeader className="p-4 flex-row pb-0">
         <div className="payflow-icon-wrapper">
-          <svg className="payflow-icon" role="presentation" aria-hidden="true">
-            <use href="/src/client/assets/logo.svg"></use>
-          </svg>
+          {/* Imported (not a "/src/..." string) so Vite copies it into the build. */}
+          <img className="payflow-icon" src={logoUrl} alt="" />
         </div>
 
         <div className="header-wrapper">
