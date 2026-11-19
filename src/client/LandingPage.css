@@ -80,17 +80,18 @@
   letter-spacing: -0.01em;
 }
 
-/* Soft colour wash behind the hero. Decorative only. */
+/* Colour wash behind the hero: green top left, soft purple top right.
+   Decorative only. */
 .lp-hero-glow {
   background:
     radial-gradient(
-      40rem 24rem at 15% 0%,
-      rgb(18 161 80 / 0.1),
+      48rem 30rem at 10% 0%,
+      rgb(18 161 80 / 0.2),
       transparent 70%
     ),
     radial-gradient(
-      40rem 24rem at 85% 10%,
-      rgb(22 131 216 / 0.12),
+      48rem 30rem at 90% 10%,
+      rgb(139 92 246 / 0.2),
       transparent 70%
     );
 }
