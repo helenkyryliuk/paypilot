@@ -80,20 +80,28 @@
   letter-spacing: -0.01em;
 }
 
-/* Colour wash behind the hero: green top left, soft purple top right.
+/* Soft pastel wash behind the hero: mint top left, sky blue top right,
+   lavender bottom right. Large, low-saturation ellipses that overlap, so the
+   colours blend into each other instead of showing as separate spots.
    Decorative only. */
 .lp-hero-glow {
   background:
     radial-gradient(
-      48rem 30rem at 10% 0%,
-      rgb(18 161 80 / 0.2),
+      ellipse 55% 70% at 0% 0%,
+      rgb(214 240 225 / 0.9),
       transparent 70%
     ),
     radial-gradient(
-      48rem 30rem at 90% 10%,
-      rgb(139 92 246 / 0.2),
-      transparent 70%
-    );
+      ellipse 60% 75% at 100% 0%,
+      rgb(205 230 248),
+      transparent 75%
+    ),
+    radial-gradient(
+      ellipse 60% 70% at 100% 100%,
+      rgb(203 203 236),
+      transparent 75%
+    ),
+    linear-gradient(180deg, #f7faff, #f3f6ff);
 }
 
 /* Small uppercase label above a heading. */
