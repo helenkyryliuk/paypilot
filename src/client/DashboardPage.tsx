@@ -69,6 +69,10 @@ function CopyLinkButton({ value }: { value: string }) {
   );
 }
 
+// In the public demo, editing and deleting links is turned off (the API
+// blocks it too). See blockInDemoMode in paymentLinks.routes.ts.
+const isDemoMode = import.meta.env.VITE_DEMO_MODE === "true";
+
 export function DashboardPage() {
   const location = useLocation();
   const [paymentLinks, setPaymentLinks] = useState<PaymentLink[]>([]);
@@ -149,6 +153,16 @@ export function DashboardPage() {
           </div>
 
           <div className="m-7 mt-5 flex flex-col gap-4">
+            {isDemoMode && (
+              <Alert>
+                <AlertTitle>You're viewing the PayPilot demo</AlertTitle>
+                <AlertDescription>
+                  Create a payment link and pay it with Stripe's test card 4242
+                  4242 4242 4242. Editing and deleting links are turned off.
+                </AlertDescription>
+              </Alert>
+            )}
+
             {error && (
               <Alert variant="destructive">
                 <AlertTitle>Something went wrong</AlertTitle>
@@ -257,27 +271,31 @@ export function DashboardPage() {
                                 >
                                   <ExternalLink />
                                 </a>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  disabled={isPending}
-                                  onClick={() =>
-                                    handleToggleStatus(paymentLink)
-                                  }
-                                >
-                                  {paymentLink.isActive
-                                    ? "Deactivate"
-                                    : "Activate"}
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  disabled={isPending}
-                                  onClick={() => handleDelete(paymentLink)}
-                                  aria-label={`Delete ${paymentLink.productName}`}
-                                >
-                                  <Trash2 />
-                                </Button>
+                                {!isDemoMode && (
+                                  <>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      disabled={isPending}
+                                      onClick={() =>
+                                        handleToggleStatus(paymentLink)
+                                      }
+                                    >
+                                      {paymentLink.isActive
+                                        ? "Deactivate"
+                                        : "Activate"}
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      disabled={isPending}
+                                      onClick={() => handleDelete(paymentLink)}
+                                      aria-label={`Delete ${paymentLink.productName}`}
+                                    >
+                                      <Trash2 />
+                                    </Button>
+                                  </>
+                                )}
                               </div>
                             </TableCell>
                           </TableRow>
