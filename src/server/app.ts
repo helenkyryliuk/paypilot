@@ -32,45 +32,53 @@ app.post(
   async (request, response) => {
     let event = request.body;
 
-    if (endpointSecret) {
-      const signature = request.headers["stripe-signature"];
+    if (!endpointSecret) {
+      console.error("STRIPE_WEBHOOK_SECRET is not configured");
 
-      try {
-        event = stripe.webhooks.constructEvent(
-          request.body,
-          signature!,
-          endpointSecret,
-        );
-      } catch (err) {
-        console.log("⚠️ Webhook signature verification failed.", err);
+      return response.status(500).send("Webhook secret is not configured");
+    }
 
-        return response.sendStatus(400);
-      }
+    const signature = request.headers["stripe-signature"];
 
-      try {
-        switch (event.type) {
-          case "payment_intent.succeeded": {
-            const paymentIntent = event.data.object as Stripe.PaymentIntent;
+    if (!signature) {
+      return response.status(400).send("Missing Stripe signature header");
+    }
 
-            console.log(
-              `PaymentIntent for ${paymentIntent.amount} was successful!`,
-            );
+    try {
+      event = stripe.webhooks.constructEvent(
+        request.body,
+        signature!,
+        endpointSecret,
+      );
+    } catch (err) {
+      console.log("⚠️ Webhook signature verification failed.", err);
 
-            await handlePaymentIntentSucceeded(paymentIntent);
+      return response.sendStatus(400);
+    }
 
-            break;
-          }
+    try {
+      switch (event.type) {
+        case "payment_intent.succeeded": {
+          const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-          default:
-            console.log(`Unhandled event type ${event.type}`);
+          console.log(
+            `PaymentIntent for ${paymentIntent.amount} was successful!`,
+          );
+
+          await handlePaymentIntentSucceeded(paymentIntent);
+
+          break;
         }
 
-        response.sendStatus(200);
-      } catch (error) {
-        console.error("Webhook processing failed:", error);
-
-        response.sendStatus(500);
+        default:
+          console.log(`Unhandled event type ${event.type}`);
       }
+
+      response.sendStatus(200);
+    } catch (error) {
+      console.error("Webhook processing failed:", error);
+
+      response.sendStatus(500);
     }
   },
 );
