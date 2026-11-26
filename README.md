@@ -14,6 +14,23 @@ The demo runs in Stripe **test mode**, so no real money moves. Editing and delet
 
 ![PayPilot demo dashboard](docs/demo-dashboard.png)
 
+<details>
+<summary><strong>More screenshots: create a link, checkout and confirmation</strong></summary>
+
+**Create a payment link**, with a live preview of the buyer's page:
+
+![Create payment page](docs/create-payment.png)
+
+**Public payment page**, with the card form provided by Stripe Payment Element:
+
+![Public payment page](docs/payment-page.png)
+
+**Payment confirmation**, shown once Stripe's webhook has confirmed the payment:
+
+![Payment confirmation page](docs/payment-success.png)
+
+</details>
+
 ---
 
 ## ✅ Project Status
