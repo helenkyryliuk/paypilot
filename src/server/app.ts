@@ -46,31 +46,31 @@ app.post(
 
         return response.sendStatus(400);
       }
-    }
 
-    try {
-      switch (event.type) {
-        case "payment_intent.succeeded": {
-          const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      try {
+        switch (event.type) {
+          case "payment_intent.succeeded": {
+            const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-          console.log(
-            `PaymentIntent for ${paymentIntent.amount} was successful!`,
-          );
+            console.log(
+              `PaymentIntent for ${paymentIntent.amount} was successful!`,
+            );
 
-          await handlePaymentIntentSucceeded(paymentIntent);
+            await handlePaymentIntentSucceeded(paymentIntent);
 
-          break;
+            break;
+          }
+
+          default:
+            console.log(`Unhandled event type ${event.type}`);
         }
 
-        default:
-          console.log(`Unhandled event type ${event.type}`);
+        response.sendStatus(200);
+      } catch (error) {
+        console.error("Webhook processing failed:", error);
+
+        response.sendStatus(500);
       }
-
-      response.sendStatus(200);
-    } catch (error) {
-      console.error("Webhook processing failed:", error);
-
-      response.sendStatus(500);
     }
   },
 );
