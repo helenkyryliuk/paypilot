@@ -6,6 +6,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuBadge,
 } from "./components/ui/sidebar";
 import { NavLink } from "react-router";
 import logoUrl from "./assets/logo.svg";
@@ -19,8 +20,19 @@ import {
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: House },
   { title: "Create Payment", url: "/create-payment", icon: SquarePlus },
-  { title: "Analytics", url: "/analytics", icon: ChartNoAxesCombined },
-  { title: "Payment Links", url: "/payment-links", icon: ExternalLink },
+  // Planned pages: shown greyed out with a "Soon" badge, not clickable yet.
+  {
+    title: "Analytics",
+    url: "/analytics",
+    icon: ChartNoAxesCombined,
+    comingSoon: true,
+  },
+  {
+    title: "Payment Links",
+    url: "/payment-links",
+    icon: ExternalLink,
+    comingSoon: true,
+  },
 ];
 
 interface AppSidebarProps {
@@ -45,6 +57,21 @@ export function AppSidebar({ pathname }: AppSidebarProps) {
         <SidebarMenu className="p-4">
           {navigationItems.map((item) => {
             const isActive = pathname === item.url;
+
+            if ("comingSoon" in item && item.comingSoon) {
+              return (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton disabled className="font-medium">
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                  <SidebarMenuBadge className="rounded-full bg-amber-50 text-[10px] font-medium text-amber-700">
+                    Soon
+                  </SidebarMenuBadge>
+                </SidebarMenuItem>
+              );
+            }
+
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
