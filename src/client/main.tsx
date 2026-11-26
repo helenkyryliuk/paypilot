@@ -10,14 +10,10 @@ import { AnalyticsPage } from "./AnalyticsPage.tsx";
 import { LandingPage } from "./LandingPage.tsx";
 import { PublicPaymentPage } from "./payment/PublicPaymentPage.tsx";
 import { PaymentSuccessPage } from "./payment/PaymentSuccessPage.tsx";
+import { isAppEnabled } from "./lib/featureFlags.ts";
 
-// Feature flag: while the app is unfinished, production shows only the
-// landing page. Set VITE_APP_ENABLED=true (e.g. in Vercel) to turn the app on.
-// Always on in local development (`npm run dev`) so you can keep building.
-// Vite inlines VITE_* variables at build time, so changing it needs a redeploy.
-const isAppEnabled =
-  import.meta.env.DEV || import.meta.env.VITE_APP_ENABLED === "true";
-
+// While the app is off (see lib/featureFlags.ts), production serves only the
+// landing page and every other address redirects to it.
 const appRoutes: RouteObject[] = [
   {
     path: "/dashboard",
