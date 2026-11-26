@@ -32,20 +32,28 @@ app.post(
   async (request, response) => {
     let event = request.body;
 
-    if (endpointSecret) {
-      const signature = request.headers["stripe-signature"];
+    if (!endpointSecret) {
+      console.error("STRIPE_WEBHOOK_SECRET is not configured");
 
-      try {
-        event = stripe.webhooks.constructEvent(
-          request.body,
-          signature!,
-          endpointSecret,
-        );
-      } catch (err) {
-        console.log("⚠️ Webhook signature verification failed.", err);
+      return response.status(500).send("Webhook secret is not configured");
+    }
 
-        return response.sendStatus(400);
-      }
+    const signature = request.headers["stripe-signature"];
+
+    if (!signature) {
+      return response.status(400).send("Missing Stripe signature header");
+    }
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        request.body,
+        signature!,
+        endpointSecret,
+      );
+    } catch (err) {
+      console.log("⚠️ Webhook signature verification failed.", err);
+
+      return response.sendStatus(400);
     }
 
     try {
