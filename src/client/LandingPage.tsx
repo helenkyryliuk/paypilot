@@ -1,5 +1,6 @@
 // Public landing page at "/".
 import type { ReactNode } from "react";
+import { Link } from "react-router";
 import {
   ArrowRight,
   ChartNoAxesCombined,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import "./LandingPage.css";
 import logoUrl from "./assets/logo.svg";
+import { isAppEnabled } from "./lib/featureFlags.ts";
 
 const GITHUB_REPO_URL = "https://github.com/helenkyryliuk/paypilot";
 const LINKEDIN_URL = "https://www.linkedin.com/in/helenkyryliuk/";
@@ -134,8 +136,17 @@ function Hero() {
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <GitHubLink variant="primary" label="View the code on GitHub" />
-            <DemoComingSoon />
+            {isAppEnabled ? (
+              <>
+                <TryDemoLink />
+                <GitHubLink variant="outline" label="View the code on GitHub" />
+              </>
+            ) : (
+              <>
+                <GitHubLink variant="primary" label="View the code on GitHub" />
+                <DemoComingSoon />
+              </>
+            )}
           </div>
 
           <p className="mt-6 inline-flex items-center gap-2 text-sm">
@@ -261,7 +272,10 @@ function ClosingCta() {
         </h2>
         <p className="max-w-xl text-white/90">
           PayPilot is a portfolio project. Explore the code, from the Stripe
-          webhook to the React components. The live demo is coming soon.
+          webhook to the React components.{" "}
+          {isAppEnabled
+            ? "Or open the live demo and try a test payment."
+            : "The live demo is coming soon."}
         </p>
         <a
           href={GITHUB_REPO_URL}
@@ -361,6 +375,19 @@ function GitHubLink({
       <GitHubMark className="size-4" />
       {label}
     </a>
+  );
+}
+
+// Opens the dashboard as the demo account (no login needed).
+function TryDemoLink() {
+  return (
+    <Link
+      to="/dashboard"
+      className="inline-flex items-center justify-center gap-2 rounded-full bg-(--button) px-6 py-3 text-sm font-semibold text-white transition hover:bg-(--button-hover)"
+    >
+      Try the demo
+      <ArrowRight className="size-4" aria-hidden="true" />
+    </Link>
   );
 }
 

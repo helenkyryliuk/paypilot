@@ -36,6 +36,7 @@ import {
   updatePaymentLinkStatus,
   type PaymentLink,
 } from "../api/paymentLinks.api.ts";
+import { isDemoMode } from "./lib/featureFlags.ts";
 
 function formatAmount(amountInCents: number, currency: string): string {
   return new Intl.NumberFormat(undefined, {
@@ -68,10 +69,6 @@ function CopyLinkButton({ value }: { value: string }) {
     </Button>
   );
 }
-
-// In the public demo, editing and deleting links is turned off (the API
-// blocks it too). See blockInDemoMode in paymentLinks.routes.ts.
-const isDemoMode = import.meta.env.VITE_DEMO_MODE === "true";
 
 export function DashboardPage() {
   const location = useLocation();
