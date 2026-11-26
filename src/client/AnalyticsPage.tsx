@@ -1,64 +1,41 @@
-import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router";
+import { ChartNoAxesCombined } from "lucide-react";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar.tsx";
 
+// Placeholder until the analytics charts are built.
 export function AnalyticsPage() {
   const location = useLocation();
+
   return (
     <SidebarProvider>
       <AppSidebar pathname={location.pathname} />
       <SidebarInset>
         <main>
-          <h2 className="create-payment-header">Create Payment</h2>
+          <h2 className="create-payment-header">
+            Analytics{" "}
+            <ChartNoAxesCombined className="online-payment-rocket-icon" />
+          </h2>
           <div className="create-payment-description">
-            Create a secure one-time payment request and share the link with
-            your customer.
+            Revenue and sales trends across your payment links.
           </div>
-          <div className="flex flex-row items-start gap-4 w-full">
-            {/* Left Column: Your Form Section */}
-            {/* <div className="flex-1 min-w-[200px]"> */}
-            <Card className="w-full sm:max-w-md m-7 mb-9 mt-5">
-              <CardHeader>
-                <CardTitle>Payment Details</CardTitle>
-                <CardDescription>
-                  <div>{/* <LockKeyholeIcon /> Secure payment{" "} */}</div>
-                  Enter the payment information and configure your request.{" "}
-                </CardDescription>
-              </CardHeader>
 
-              <CardContent>
-                <Card size="sm" className="mx-auto w-full max-w-sm">
-                  <CardHeader>
-                    <CardTitle>Small Card</CardTitle>
-                    <CardDescription>
-                      This card uses the small size variant.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>
-                      The card component supports a size prop that can be set to
-                      &quot;sm&quot; for a more compact appearance.
-                    </p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" size="sm" className="w-full">
-                      Action
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </CardContent>
-            </Card>
-            {/* </div> */}
-          </div>
+          <Card className="m-7 mt-5 w-full sm:max-w-md">
+            <CardHeader>
+              <CardTitle>Coming soon</CardTitle>
+              <CardDescription>
+                Charts for revenue, payments over time and your best-selling
+                links are in progress. For now, the Dashboard shows payments and
+                revenue for each link.
+              </CardDescription>
+            </CardHeader>
+          </Card>
         </main>
       </SidebarInset>
     </SidebarProvider>

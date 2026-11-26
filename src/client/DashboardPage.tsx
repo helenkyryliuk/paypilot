@@ -4,7 +4,7 @@ import {
   Check,
   Copy,
   ExternalLink,
-  LayoutDashboard,
+  House,
   Plus,
   Trash2,
 } from "lucide-react";
@@ -143,7 +143,7 @@ export function DashboardPage() {
       <SidebarInset>
         <main>
           <h2 className="create-payment-header">
-            Dashboard <LayoutDashboard className="mt-2" />
+            Dashboard <House className="online-payment-rocket-icon" />
           </h2>
           <div className="create-payment-description">
             All your payment links, their status and how much they have earned.

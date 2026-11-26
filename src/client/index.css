@@ -249,6 +249,8 @@ code {
 
 .create-payment-header {
   display: flex;
+  /* Centre the icon vertically on the heading text. */
+  align-items: center;
   margin: 30px;
   margin-bottom: 5px;
 }
@@ -427,8 +429,6 @@ code {
 
 .online-payment-rocket-icon {
   color: var(--sidebar-accent-foreground);
-  margin-top: 5px;
-  font-size: 10px;
   margin-left: 6px;
 }
 

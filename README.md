@@ -4,32 +4,55 @@ PayPilot is a full-stack payment links application designed for content creators
 
 This MVP demonstrates modern frontend architecture, TypeScript, API integration, payment workflows, form handling, and full-stack collaboration between a React frontend and Node.js backend.
 
-**🔗 Live site: [paypilot-gamma.vercel.app](https://paypilot-gamma.vercel.app)**
+**🔗 Live demo: [paypilot-gamma.vercel.app](https://paypilot-gamma.vercel.app)**
 
-The landing page is live. The interactive demo of the creator dashboard is coming soon.
+Click **Try the demo** to open the creator dashboard with sample data (no sign-up needed). Create a payment link, open it, and pay with Stripe's test card `4242 4242 4242 4242` (any future expiry date and any CVC). The payment appears in the dashboard once Stripe's webhook confirms it.
+
+The demo runs in Stripe **test mode**, so no real money moves. Editing and deleting links are turned off in the demo, and the sample data is reset regularly.
 
 [![PayPilot landing page](docs/landing-page.png)](https://paypilot-gamma.vercel.app)
 
+![PayPilot demo dashboard](docs/demo-dashboard.png)
+
+<details>
+<summary><strong>More screenshots: create a link, checkout and confirmation</strong></summary>
+
+**Create a payment link**, with a live preview of the buyer's page:
+
+![Create payment page](docs/create-payment.png)
+
+**Public payment page**, with the card form provided by Stripe Payment Element:
+
+![Public payment page](docs/payment-page.png)
+
+**Payment confirmation**, shown once Stripe's webhook has confirmed the payment:
+
+![Payment confirmation page](docs/payment-success.png)
+
+</details>
+
 ---
 
-## ✨ Features
+## ✅ Project Status
 
-- Create reusable payment links for products or services
-- Generate unique public payment URLs
-- Accept secure payments using Stripe Payment Element
-- Display seller, product, amount, and payment information
-- Handle payment success and error states
+### Working now
 
----
+- Public landing page
+- **Creator dashboard**: every payment link with its status, number of completed payments and revenue
+- **Create payment links** with a unique, shareable public URL, then copy or open them from the dashboard
+- **Public payment page** with Stripe Payment Element (card details go straight to Stripe, never to PayPilot)
+- **Stripe webhook** that verifies every event's signature before recording a payment as succeeded
+- **Payment confirmation page** that waits for the webhook, then shows the receipt (and the download link for digital products)
+- **Demo mode** with realistic sample data and a reset script (`npm run db:seed`)
 
-## ✨ Future Improvements
+### In progress
 
-- Track payment link status and usage
-- Dashboard for managing payment links
-- Payment analytics
-- Copy payment links directly from the dashboard
-- Responsive user interface
-- Accessible form controls and interactions
+- Recording **failed payments** (`payment_intent.payment_failed`)
+- Creating the Stripe PaymentIntent when the buyer is ready to pay, not on every page view
+- **Analytics** charts (revenue and payments over time)
+- **Payment Links** page
+- **Authentication** and multiple sellers
+- **Automated tests** for the payment flow and the Stripe webhook
 
 ## 🛠 Tech Stack
 
@@ -335,6 +358,10 @@ VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_test_publishable_key
 # Optional: production shows only the landing page unless this is "true".
 # Local development always has the app on.
 # VITE_APP_ENABLED=true
+
+# Optional: demo mode hides editing and deleting links in the dashboard and
+# blocks them in the API (read by both the frontend and the server).
+# VITE_DEMO_MODE=true
 ```
 
 The frontend calls the API on the same origin (`/api`), so no API URL is needed.
@@ -407,6 +434,7 @@ PayPilot is deployed on **Vercel**, and every push to `main` deploys automatical
 - The Express app runs as a single Vercel Function (`api/index.ts`). `vercel.json` routes `/api/*` to it and every other path to the React app.
 - Database schema changes are applied to production with `npm run db:migrate:deploy`.
 - `VITE_APP_ENABLED` is a feature flag: while it is unset, production serves only the landing page.
+- `VITE_DEMO_MODE` turns on demo mode for the public demo, and `npm run db:seed` resets the demo data.
 
 ---
 
@@ -416,14 +444,14 @@ PayPilot is deployed on **Vercel**, and every push to `main` deploys automatical
 /                    Landing page
 /dashboard           Payment links dashboard
 /create-payment      Create a payment link
-/analytics           Analytics
+/analytics           Analytics (coming soon)
 /pay/:slug           Public payment page
 /pay/:slug/success   Payment confirmation
 ```
 
 ### Dashboard
 
-View and manage existing payment links.
+See every payment link with its status, completed payments and revenue, and copy or open each link.
 
 ### Create
 
@@ -431,7 +459,7 @@ Create a new payment link.
 
 ### Analytics
 
-View payment and payment-link activity.
+Coming soon: revenue and payment charts.
 
 ### Public Payment Page
 
@@ -470,7 +498,7 @@ Potential future additions include:
 - Single-use payment links
 - Refund management
 - Email receipts
-- Improved webhook event handling
+- Recording failed and refunded payments from webhook events
 - Additional currencies
 - Subscription payments
 - Automated tests for the payment flow and Stripe webhook
