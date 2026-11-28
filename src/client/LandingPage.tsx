@@ -16,6 +16,14 @@ import {
 import "./LandingPage.css";
 import logoUrl from "./assets/logo.svg";
 import { isAppEnabled } from "./lib/featureFlags.ts";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const GITHUB_REPO_URL = "https://github.com/helenkyryliuk/paypilot";
 const LINKEDIN_URL = "https://www.linkedin.com/in/helenkyryliuk/";
@@ -172,20 +180,29 @@ function HowItWorks() {
 
         <ol className="mt-12 grid gap-5 md:grid-cols-3">
           {steps.map((step, index) => (
-            <li
-              key={step.title}
-              className="rounded-2xl border border-(--line) bg-white p-6"
-            >
-              <div className="flex items-center justify-between">
-                <span className="lp-icon-tile" aria-hidden="true">
-                  <step.icon className="size-5" />
-                </span>
-                <span className="text-sm font-semibold text-(--ink-muted)">
-                  Step {index + 1}
-                </span>
-              </div>
-              <h3 className="lp-card-title mt-5">{step.title}</h3>
-              <p className="mt-2 leading-relaxed">{step.text}</p>
+            <li key={step.title}>
+              <Card className={landingCardClasses}>
+                <CardHeader className="gap-0 px-0">
+                  <div className="flex items-center justify-between">
+                    <span className="lp-icon-tile" aria-hidden="true">
+                      <step.icon className="size-5" />
+                    </span>
+                    <span className="text-sm font-semibold text-(--ink-muted)">
+                      Step {index + 1}
+                    </span>
+                  </div>
+                  <CardTitle
+                    role="heading"
+                    aria-level={3}
+                    className="lp-card-title mt-5 leading-[inherit]"
+                  >
+                    {step.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-0">
+                  <p className="mt-2 leading-relaxed">{step.text}</p>
+                </CardContent>
+              </Card>
             </li>
           ))}
         </ol>
@@ -208,24 +225,31 @@ function Features() {
 
         <ul className="mt-12 grid gap-5 sm:grid-cols-2">
           {features.map((feature) => (
-            <li
-              key={feature.title}
-              className="flex gap-4 rounded-2xl border border-(--line) bg-white p-6"
-            >
-              <span className="lp-icon-tile shrink-0" aria-hidden="true">
-                <feature.icon className="size-5" />
-              </span>
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="lp-card-title">{feature.title}</h3>
-                  {feature.inProgress && (
-                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
-                      In progress
-                    </span>
-                  )}
+            <li key={feature.title}>
+              <Card className={`${landingCardClasses} flex-row gap-4`}>
+                <span className="lp-icon-tile shrink-0" aria-hidden="true">
+                  <feature.icon className="size-5" />
+                </span>
+                <div>
+                  <CardHeader className="flex flex-wrap items-center gap-2 px-0">
+                    <CardTitle
+                      role="heading"
+                      aria-level={3}
+                      className="lp-card-title leading-[inherit]"
+                    >
+                      {feature.title}
+                    </CardTitle>
+                    {feature.inProgress && (
+                      <Badge className="rounded-full border-0 bg-amber-50 text-amber-700">
+                        In progress
+                      </Badge>
+                    )}
+                  </CardHeader>
+                  <CardContent className="px-0">
+                    <p className="mt-2 leading-relaxed">{feature.text}</p>
+                  </CardContent>
                 </div>
-                <p className="mt-2 leading-relaxed">{feature.text}</p>
-              </div>
+              </Card>
             </li>
           ))}
         </ul>
@@ -249,12 +273,14 @@ function TechStack() {
 
         <ul className="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2.5">
           {techStack.map((tech) => (
-            <li
+            <Badge
               key={tech}
-              className="rounded-full border border-(--line) bg-white px-4 py-1.5 text-sm font-medium text-(--ink)"
+              asChild
+              variant="outline"
+              className="h-auto rounded-full border-(--line) bg-white px-4 py-1.5 text-sm text-(--ink)"
             >
-              {tech}
-            </li>
+              <li>{tech}</li>
+            </Badge>
           ))}
         </ul>
       </div>
@@ -277,16 +303,16 @@ function ClosingCta() {
             ? "Or open the live demo and try a test payment."
             : "The live demo is coming soon."}
         </p>
-        <a
-          href={GITHUB_REPO_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-(--ink) shadow-sm transition hover:shadow-md"
+        <Button
+          asChild
+          className="h-auto gap-2 rounded-full border-0 bg-white px-6 py-3 font-semibold text-(--ink) shadow-sm hover:shadow-md [a]:hover:bg-white"
         >
-          <GitHubMark className="size-4" />
-          View on GitHub
-          <ArrowRight className="size-4" aria-hidden="true" />
-        </a>
+          <a href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">
+            <GitHubMark className="size-4" />
+            View on GitHub
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </a>
+        </Button>
       </div>
     </section>
   );
@@ -350,6 +376,19 @@ function SectionHeading({
   );
 }
 
+// Class overrides that keep shadcn's Button and Card looking like the
+// original landing page design (pill buttons, soft-bordered white cards).
+const pillButtonClasses = "h-auto gap-2 rounded-full font-semibold";
+// The original primary buttons had no border; shadcn's Button always adds a
+// transparent 1px one, so it's removed to keep the size identical.
+const primaryButtonClasses =
+  "border-0 bg-(--button) text-white hover:bg-(--button-hover) [a]:hover:bg-(--button-hover)";
+const outlineButtonClasses =
+  "border-(--line) bg-white text-(--ink) hover:bg-(--surface) hover:text-(--ink)";
+// Inherit font size and line height from the page instead of Card's text-sm.
+const landingCardClasses =
+  "h-full gap-0 rounded-2xl border border-(--line) bg-white p-6 text-[length:inherit] leading-[inherit] text-(--ink-muted) ring-0";
+
 function GitHubLink({
   variant,
   size = "md",
@@ -360,50 +399,52 @@ function GitHubLink({
   label?: string;
 }) {
   const sizeClasses = size === "sm" ? "px-3.5 py-1.5" : "px-6 py-3";
-  const variantClasses =
-    variant === "primary"
-      ? "bg-(--button) text-white hover:bg-(--button-hover)"
-      : "border border-(--line) bg-white text-(--ink) hover:bg-(--surface)";
 
   return (
-    <a
-      href={GITHUB_REPO_URL}
-      target="_blank"
-      rel="noreferrer"
-      className={`inline-flex items-center justify-center gap-2 rounded-full text-sm font-semibold transition ${sizeClasses} ${variantClasses}`}
+    <Button
+      asChild
+      variant={variant === "primary" ? "default" : "outline"}
+      className={`${pillButtonClasses} ${sizeClasses} ${
+        variant === "primary" ? primaryButtonClasses : outlineButtonClasses
+      }`}
     >
-      <GitHubMark className="size-4" />
-      {label}
-    </a>
+      <a href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">
+        <GitHubMark className="size-4" />
+        {label}
+      </a>
+    </Button>
   );
 }
 
 // Opens the dashboard as the demo account (no login needed).
 function TryDemoLink() {
   return (
-    <Link
-      to="/dashboard"
-      className="inline-flex items-center justify-center gap-2 rounded-full bg-(--button) px-6 py-3 text-sm font-semibold text-white transition hover:bg-(--button-hover)"
+    <Button
+      asChild
+      className={`${pillButtonClasses} px-6 py-3 ${primaryButtonClasses}`}
     >
-      Try the demo
-      <ArrowRight className="size-4" aria-hidden="true" />
-    </Link>
+      <Link to="/dashboard">
+        Try the demo
+        <ArrowRight className="size-4" aria-hidden="true" />
+      </Link>
+    </Button>
   );
 }
 
 function DemoComingSoon() {
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
       disabled
-      className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-full border border-dashed border-(--line) bg-white px-6 py-3 text-sm font-semibold text-(--ink-muted)"
+      className={`${pillButtonClasses} border-dashed border-(--line) bg-white px-6 py-3 text-(--ink-muted) hover:bg-white hover:text-(--ink-muted) disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100`}
     >
       Live demo
-      <span className="inline-flex items-center gap-1 rounded-full bg-(--surface) px-2 py-0.5 text-xs font-medium">
+      <Badge className="rounded-full border-0 bg-(--surface) text-(--ink-muted)">
         <Clock className="size-3" aria-hidden="true" />
         Coming soon
-      </span>
-    </button>
+      </Badge>
+    </Button>
   );
 }
 
